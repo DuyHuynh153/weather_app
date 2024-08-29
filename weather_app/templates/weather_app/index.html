@@ -1,0 +1,148 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}" />
+  </head>
+  <body>
+    <div class="weather-header">
+        <h1>Weather Dashboard - Huynh Lam Duy</h1>
+        <!-- save weather history -->
+
+        <!-- <div>
+          <form id="save-weather-form" method="post" action="{% url 'save_weather' %}">
+            {% csrf_token %}
+            <input type="hidden" name="city" value="{{ weather_data.city }}">
+            <input type="hidden" name="country" value="{{ weather_data.country }}">
+            <input type="hidden" name="temperature" value="{{ weather_data.temperature }}">
+            <input type="hidden" name="condition" value="{{ weather_data.condition }}">
+            <input type="hidden" name="wind_kph" value="{{ weather_data.wind_kph }}">
+            <input type="hidden" name="humidity" value="{{ weather_data.humidity }}">
+            <button type="submit" class="save-weather">Save Weather</button>
+        </form> -->
+  
+        <!-- sign ing functionaliy -->
+          <!-- <button class="sign-in">sign in</button> -->
+          <!-- <a href="{% url 'register_weather_info' %}" class="btn btn-primary">Register for Daily Weather Info</a> -->
+
+        </div>
+        
+    </div>
+    {% if user.is_authenticated %}
+    <div class="authen" >
+      <p>welcome {{user.username}}. Thanks you for login in</p>
+      <div class="btn-function">
+        <a href="{% url 'home' %}?latest_weather=true">Lasted Weather Saved</a>
+        <a href="{% url 'logout' %}">logout</a>
+        
+      </div>
+    </div>
+
+    {% else %}
+    <div class="authen">
+      <p>welcome!!  please login </p> 
+      <div class="btn-function">
+        <a href="{% url 'login' %}"> login</a>  
+        <a href="{% url 'register_weather_info' %}">register</a>
+      </div>
+      
+    </div>
+   
+    {% endif %}
+
+
+
+    <div class="weather-dashboard">
+      <div class="weather-search">
+        <form id="weather-form"  method="post">
+          {% csrf_token %}
+          <input
+            type="text"
+            name="city"
+            placeholder="E.g., New York, London, Tokyo"
+          />
+
+          <input
+            type="hidden"
+            id="lat"
+            name="lat"
+            value=""  
+          />
+          <input
+            type="hidden"
+            id="lon"
+            name="lon"
+            value=""  
+            />
+
+          <button type="submit" >Search</button>
+          <p>or</p>
+          <button type="button" class="current-location-btn">
+            Use Current Location
+          </button>
+        </form>
+      </div>
+
+      
+
+      <!-- the main part -->
+      <div class="weather_main-container">
+        <div class="city-container">
+          {% if messages %}
+            <div class="messages">
+              {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+          {% if weather_data %}
+            <div>
+              {% include "weather_app/city_weather.html" with weather_data=weather_data messages=messages %}
+            </div>
+          {% endif %}
+          
+          {% if error %}
+            <div class="error-container">
+              <p>{{ error }}</p>
+            </div>
+          {% endif %}
+          
+        
+      </div>
+    </div>
+
+
+    
+    <script>
+      document.querySelector('.current-location-btn').addEventListener('click', function() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            // Get latitude and longitude
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            
+            // Set the values in the hidden inputs
+            document.getElementById('lat').value = lat;
+            document.getElementById('lon').value = lon;
+            
+            // Optionally submit the form if needed
+            document.getElementById('weather-form').submit();
+          }, function(error) {
+            // Handle errors here, e.g., show an error message
+            alert('Unable to retrieve your location.');
+          });
+        } else {
+          // Browser doesn't support Geolocation
+          alert('Geolocation is not supported by this browser.');
+        }
+      });
+    </script>
+    
+  </body>
+</html>

@@ -1,0 +1,54 @@
+{% if weather_data %}
+
+<div class="city-weather">
+
+  
+  <div class="current-weather">
+    
+    <div class="weather-info">
+      <h2>{{ weather_data.city }} ({{ weather_data.Date }})</h2>
+      <p>Temperature: {{ weather_data.temperature }}°C</p>
+      <p>Wind: {{ weather_data.wind_kph }} M/S</p>
+      <p>Humidity: {{ weather_data.humidity }}%</p>
+    </div>
+    <div class="weather-condition">
+      <img src="{{ weather_data.icon }}" alt="{{ weather_data.condition }}" />
+      <p>{{ weather_data.condition }}</p>
+    </div>
+  </div>
+
+  {% if daily_forecast %}
+  <h3>4-Day Forecast</h3>
+  <div class="forecast-container">
+    {% for day in daily_forecast %}
+    <div class="forecast-day">
+      <p>{{ day.date }}</p>
+      <img src="{{ day.icon }}" alt="" />
+      <p>Temp: {{ day.temperature }}°C</p>
+      <p>Wind: {{ day.wind_kph }} M/S</p>
+      <p>Humidity: {{ day.humidity }}%</p>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div>
+    <form id="save-weather-form" method="post" action="{% url 'save_weather' %}">
+      {% csrf_token %}
+      <input type="hidden" name="city" value="{{ weather_data.city }}">
+      <input type="hidden" name="country" value="{{ weather_data.country }}">
+      <input type="hidden" name="icon" value="{{ weather_data.icon }}">
+      <input type="hidden" name="temperature" value="{{ weather_data.temperature }}">
+      <input type="hidden" name="condition" value="{{ weather_data.condition }}">
+      <input type="hidden" name="wind_kph" value="{{ weather_data.wind_kph }}">
+      <input type="hidden" name="humidity" value="{{ weather_data.humidity }}">
+      <input type="hidden" name="weather_time" value="{{ weather_data.Date }}">
+      {% if request.user.is_authenticated %}
+      <button type="submit" class="save-weather">Save Weather</button>
+      {% endif %}
+  </form>
+  
+</div>
+{% endif %}
+
+

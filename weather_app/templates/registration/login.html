@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0; /* Optional: Add a background color */
+        }
+        .form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        .form__group {
+            margin-bottom: 15px;
+        }
+        .form__group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form__group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .btn--main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn--main svg {
+            margin-right: 8px;
+        }
+        .btn--main:hover {
+            background-color: #0056b3;
+        }
+        .messages {
+            margin-top: 20px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <form class="form" action="{% url 'login' %}" method="POST">
+        {% csrf_token %}
+        <div class="form__group">
+            <label for="room_name">Email</label>
+            <input
+                id="username"
+                name="email"
+                type="text"
+                placeholder="enter your email"
+            />
+        </div>
+        <div class="form__group">
+            <label for="password">Password (greater than 8 letters)</label>
+            <input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
+            />
+        </div>
+        <button class="btn btn--main" type="submit">
+            <svg
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 32 32"
+            >
+                <title>lock</title>
+                <path
+                    d="M27 12h-1v-2c0-5.514-4.486-10-10-10s-10 4.486-10 10v2h-1c-0.553 0-1 0.447-1 1v18c0 0.553 0.447 1 1 1h22c0.553 0 1-0.447 1-1v-18c0-0.553-0.447-1-1-1zM8 10c0-4.411 3.589-8 8-8s8 3.589 8 8v2h-16v-2zM26 30h-20v-16h20v16z"
+                ></path>
+                <path
+                    d="M15 21.694v4.306h2v-4.306c0.587-0.348 1-0.961 1-1.694 0-1.105-0.895-2-2-2s-2 0.895-2 2c0 0.732 0.413 1.345 1 1.694z"
+                ></path>
+            </svg>
+            Login
+        </button>
+    </form>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+</body>
+</html>

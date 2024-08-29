@@ -1,0 +1,37 @@
+
+{% if weather_history %}
+<div class="city-weather">
+
+  
+  <div class="current-weather">
+    
+    <div class="weather-info">
+      <h2>{{ weather_history.city }} ({{ weather_history.Date }})</h2>
+      <p>Temperature: {{ weather_history.temperature }}°C</p>
+      <p>Wind: {{ weather_history.wind_kph }} M/S</p>
+      <p>Humidity: {{ weather_history.humidity }}%</p>
+    </div>
+    <div class="weather-condition">
+      <img src="{{ weather_history.icon }}" alt="{{ weather_history.condition }}" />
+      <p>{{ weather_history.condition }}</p>
+    </div>
+  </div>
+
+  {% if daily_forecast %}
+  <h3>4-Day Forecast</h3>
+  <div class="forecast-container">
+    {% for day in daily_forecast %}
+    <div class="forecast-day">
+      <p>{{ day.date }}</p>
+      <img src="{{ day.icon }}" alt="" />
+      <p>Temp: {{ day.temperature }}°C</p>
+      <p>Wind: {{ day.wind_kph }} M/S</p>
+      <p>Humidity: {{ day.humidity }}%</p>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  
+</div>
+{% endif %}

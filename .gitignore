@@ -22,3 +22,5 @@ env/
 # Ignore IDE-specific files (if using)
 .vscode/
 .idea/
+
+staticfiles/

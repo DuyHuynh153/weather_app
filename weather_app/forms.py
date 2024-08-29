@@ -16,4 +16,6 @@ class RegistrationForm(UserCreationForm):
             raise ValidationError("Email already exists")
         return email
 
+class SubscriptionForm(forms.ModelForm):
+    email = forms.EmailField(label='Email', max_length=100)
 

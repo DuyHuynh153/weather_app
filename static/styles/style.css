@@ -1,0 +1,235 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #e0ecf8;
+  padding: 0;
+  margin: 0;
+  display: block;
+  min-height: 100vh;
+}
+
+.weather-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.weather-header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+form#save-weather-form {
+  display: inline-block;
+  margin: 0;
+}
+
+button.save-weather,
+button.sign-in {
+  padding: 10px 20px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+button.save-weather:hover,
+button.sign-in:hover {
+  background-color: #3b7dc4;
+}
+
+button.sign-in {
+  background-color: #6c757d;
+}
+
+button.sign-in:hover {
+  background-color: #5a6369;
+}
+
+.weather-dashboard {
+  display: flex;
+  padding: 20px;
+  /* width: 90%; */
+  height: 80vh;
+}
+
+.weather-search {
+  flex: 1; /* This will make it 1/4 of the container's width */
+  background-color: #f0f4ff; /* Optional: Add background for visual separation */
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.weather_main-container {
+  flex: 3; /* This will make it 3/4 of the container's width */
+  background-color: #d0e4ff; /* Optional: Add background for visual separation */
+  padding: 20px;
+  border-radius: 8px;
+}
+/* .weather-info {
+  display: flex;
+  justify-content: center;
+} */
+
+h1 {
+  text-align: center;
+  color: #3366cc;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+input[type="text"] {
+  width: 80%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+button[type="submit"],
+.current-location-btn {
+  width: 80%;
+  padding: 10px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.current-location-btn {
+  background-color: #6c757d;
+}
+
+button:hover {
+  background-color: #3b7dc4;
+}
+
+.current-location-btn:hover {
+  background-color: #5a6369;
+}
+
+.city-weather {
+  width: 100%;
+}
+
+.current-weather {
+  background-color: #d1e7f3;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.current-weather h2 {
+  margin: 0;
+  color: #3366cc;
+}
+
+.weather-condition {
+  display: block;
+  align-items: center;
+}
+
+.weather-condition img {
+  width: 80px;
+  height: 80px;
+  align-items: center;
+}
+
+.forecast-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.forecast-day {
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  width: 22%;
+}
+
+.forecast-day img {
+  width: 30px;
+  height: 30px;
+}
+
+/* Common button styles */
+button.save-weather {
+  width: 100%;
+  padding: 10px;
+  background-color: #4a90e2; /* Primary color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+button.save-weather:hover {
+  background-color: #3b7dc4; /* Darker shade on hover */
+}
+
+/* message */
+.messages {
+  margin-bottom: 20px;
+}
+
+.alert {
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.login_register {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.authen {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 30px;
+}
+
+.btn-function > a {
+  padding: 10px 20px;
+  background-color: #4a90e2;
+  color: rgb(255, 255, 255);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+.btn-function > a:hover {
+  background-color: #37c637;
+}

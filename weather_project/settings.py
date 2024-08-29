@@ -33,7 +33,7 @@ WEATHER_API_KEY = config("WEATHER_API_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["52.41.36.82","54.191.253.12", "44.226.122.3", "weather-project-jwi1.onrender.com"]
+ALLOWED_HOSTS = ["127.0.0.1","52.41.36.82","54.191.253.12", "44.226.122.3", "weather-app-0cfs.onrender.com"]
 
 
 # Application definition

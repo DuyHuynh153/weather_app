@@ -35,7 +35,14 @@ class City(models.Model):
     def __str__(self):
         return f"{self.name}, {self.country}"
     
-    
+class Subscription(models.Model):
+    email = models.EmailField(unique=True, null=True)
+    token = models.CharField(max_length=100, unique=True)
+    confirmed = models.BooleanField(default=False)
+    city = models.CharField(max_length=100, null=True)
+
+    def __str__(self):
+        return self.email
 
 
 

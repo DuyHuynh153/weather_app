@@ -3,6 +3,7 @@
 import datetime
 import logging
 import os
+import uuid
 from django.contrib import messages
 from time import timezone
 from django.http import JsonResponse
@@ -15,13 +16,14 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode , urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
+
 from .token import account_activation_token
 from django.core.mail import EmailMessage
 from django.contrib.auth import  login, logout, authenticate
 from django.urls import reverse
 
-from .models import WeatherHistory, User
-from .forms import RegistrationForm
+from .models import Subscription, WeatherHistory, User
+from .forms import RegistrationForm, SubscriptionForm
 
 
 
@@ -48,10 +50,18 @@ def loginPage(request):
                 login(request, user)
                 return redirect("home")
             else:
-                messages.error(request, "Email or password is incorrect!")
+                messages.error(request, "Email or password is incorrect Or account not activate yes. Please activate your account in email we sent youuu")
 
     context = {'page': page}
     return render(request, "registration/login.html", context)
+
+
+def logoutUser(request):
+    #  remove session ID from cookie to logout
+    logout(request)
+    return redirect("home")
+
+
 
 def home(request):
     # API_KEY = open("API_KEY" , "r").read()
@@ -88,23 +98,34 @@ def home(request):
                     "messages": messages_to_display
                 }
          # Fetch the latest saved weather data for the user if the request method is GET and the query parameter is present
-        if request.method == "GET" and request.user.is_authenticated and request.GET.get('latest_weather') == 'true':
-            saved_weather_data = WeatherHistory.objects.filter(user=request.user).order_by('-weather_time').first()
-            if saved_weather_data:
-                context["weather_data"] = {
-                    "city": saved_weather_data.city,
-                    "country": saved_weather_data.country,
-                    "temperature": saved_weather_data.temperature,
-                    "wind_kph": saved_weather_data.wind_speed,
-                    "humidity": saved_weather_data.humidity,
-                    "Date": saved_weather_data.weather_time,
-                    "icon": saved_weather_data.icon ,  # Add appropriate icon if available
-                    "condition": saved_weather_data.condition  # Add appropriate condition if available
-                }
-                # Assuming you have a way to fetch forecast data based on the saved weather data
-                # For simplicity, let's assume you have a function to fetch forecast data
-                context["daily_forecast"] = []  # Add forecast data if available
-
+        elif request.method == "GET":
+            if request.user.is_authenticated and request.GET.get('latest_weather') == 'true':
+                saved_weather_data = WeatherHistory.objects.filter(user=request.user).order_by('-weather_time').first()
+                if saved_weather_data:
+                    context["weather_data"] = {
+                        "city": saved_weather_data.city,
+                        "country": saved_weather_data.country,
+                        "temperature": saved_weather_data.temperature,
+                        "wind_kph": saved_weather_data.wind_speed,
+                        "humidity": saved_weather_data.humidity,
+                        "Date": saved_weather_data.weather_time,
+                        "icon": saved_weather_data.icon,  # Add appropriate icon if available
+                        "condition": saved_weather_data.condition  # Add appropriate condition if available
+                    }
+                    # Assuming you have a way to fetch forecast data based on the saved weather data
+                    # For simplicity, let's assume you have a function to fetch forecast data
+                    context["daily_forecast"] = []  # Add forecast data if available
+            elif request.GET.get('city'):
+                city = request.GET.get('city')
+                weather_data, daily_forecast = fetch_weather_and_forecast_data(city, API_KEY, current_weather_url, forecast_url)
+                if weather_data:
+                    context = {
+                        "weather_data": weather_data,
+                        "daily_forecast": daily_forecast,
+                        "messages": messages_to_display
+                    }
+                
+            
         return render(request, "weather_app/index.html", context)
     except Exception as e:
         logging.error(f"Error fetching weather data: {e}")
@@ -213,7 +234,7 @@ def register_user(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.username = user.username.lower()
-            user.is_active = True
+            user.is_active = False
             user.save()
             
             current_site = get_current_site(request)
@@ -252,6 +273,14 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         
+        # Automatically subscribe the user to daily weather information
+        email = user.email
+        token = str(uuid.uuid4())
+        subscription, created = Subscription.objects.get_or_create(email=email)
+        subscription.token = token
+        subscription.confirmed = False
+        subscription.save()
+        
         messages.success(request,"you account successfully activated ! Now you can login")
         return  redirect ("home")
     else:
@@ -259,7 +288,83 @@ def activate(request, uidb64, token):
         return redirect ("home")
         
     
-def logoutUser(request):
-    #  remove session ID from cookie to logout
-    logout(request)
-    return redirect("home")
+def subscribe(request):
+    if request.method == 'POST':
+        form = SubscriptionForm(request.POST)
+        if form.is_valid():
+            city = form.cleaned_data['city']
+            email = request.user.email
+            
+            try:
+                subscription = Subscription.objects.get(email=email)
+                subscription.confirmed = True
+                subscription.city = city
+                subscription.save()
+
+                messages.success(request, "You have successfully subscribed to daily weather updates!")
+
+            except Subscription.DoesNotExist:
+                messages.error(request, "Subscription not found. Please activate your account first.")
+
+            # return redirect("home")  # Redirect to the user's profile or dashboard
+            return redirect(f"{reverse('home')}?city={city}")
+
+    else:
+        form = SubscriptionForm()
+    return render(request, 'weather_app/subscribe.html', {'form': form})
+
+
+
+
+
+# def register_user(request):
+#     form = RegistrationForm()
+#     if request.method == "POST":
+#         form = RegistrationForm(request.POST)
+#         if form.is_valid():
+#             user = form.save(commit=False)
+#             user.username = user.username.lower()
+#             user.is_active = True
+#             user.save()
+            
+#             current_site = get_current_site(request)
+#             mail_subject = "Activate your account"
+            
+#             context = {
+#                 "user":user,
+#                 "domain":current_site.domain,
+#                 "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+#                 "token": account_activation_token.make_token(user),
+#                 "protocol": "https" if settings.DEBUG else "http" 
+#             }
+#             message = render_to_string("registration/account_activation_email.html", context)
+#             to_email = form.cleaned_data["email"]
+#             email = EmailMessage(
+#                 mail_subject, message,from_email=settings.DEFAULT_FROM_EMAIL, to =[to_email]
+#             )
+#             email.send()
+#             messages.success(request, "Please check you email to complete your registration")
+            
+#             return redirect("home")
+        
+#     return render(request,"registration/register.html", {"form":form})
+
+               
+# def activate(request, uidb64, token):
+#     try:
+        
+#         uid = force_str(urlsafe_base64_decode(uidb64))
+#         user = User.objects.get(pk = uid)
+        
+#     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+#         user = None
+        
+#     if user is not None and account_activation_token.check_token(user,  token):
+#         user.is_active = True
+#         user.save()
+        
+#         messages.success(request,"you account successfully activated ! Now you can login")
+#         return  redirect ("home")
+#     else:
+#         messages.error(request,"Activation link not found")
+#         return redirect ("home")

@@ -32,9 +32,11 @@ SECRET_KEY = config("SECRET_KEY")
 WEATHER_API_KEY = config("WEATHER_API_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = config("DEBUG", default=True, cast=bool)
 
-ALLOWED_HOSTS = ["127.0.0.1","52.41.36.82","54.191.253.12", "44.226.122.3", "weather-app-0cfs.onrender.com"]
+# ALLOWED_HOSTS = ["127.0.0.1","52.41.36.82","54.191.253.12", "44.226.122.3", "weather-app-0cfs.onrender.com"]
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="127.0.0.1").split(",")
 
 
 # Application definition
@@ -94,11 +96,17 @@ WSGI_APPLICATION = 'weather_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'EfeRdAPzjzaNVFiNbYwSCMKlauubZlwE',
-        'HOST': 'autorack.proxy.rlwy.net',
-        'PORT': '58234',
+        # 'NAME': 'railway',
+        # 'USER': 'postgres',
+        # 'PASSWORD': 'EfeRdAPzjzaNVFiNbYwSCMKlauubZlwE',
+        # 'HOST': 'autorack.proxy.rlwy.net',
+        # 'PORT': '58234',
+        
+        'NAME': config("DB_NAME"),
+        'USER': config("DB_USER"),
+        'PASSWORD': config("DB_PASSWORD"),
+        'HOST': config("DB_HOST"),
+        'PORT': config("DB_PORT"),
     }
 }
 
@@ -169,3 +177,4 @@ EMAIL_HOST_PASSWORD = mail_pass
 DEFAULT_FROM_EMAIL = mail
 
 LOGIN_REDIRECT_URL = "/"
+

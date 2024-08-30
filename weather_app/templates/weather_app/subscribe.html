@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Subscribe to Daily Weather Updates</title>
+</head>
+<body>
+    <h1>Subscribe to Daily Weather Updates</h1>
+    <form method="post" action="{% url 'subscribe' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Subscribe</button>
+    </form>
+</body>
+</html>

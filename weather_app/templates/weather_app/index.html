@@ -37,6 +37,7 @@
     <div class="authen" >
       <p>welcome {{user.username}}. Thanks you for login in</p>
       <div class="btn-function">
+        <a href="{% url 'subscribe' %}">Subscibe Daily Weather</a>
         <a href="{% url 'home' %}?latest_weather=true">Lasted Weather Saved</a>
         <a href="{% url 'logout' %}">logout</a>
         

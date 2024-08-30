@@ -8,6 +8,7 @@ urlpatterns = [
     path('register_weather_info/', views.register_user, name='register_weather_info'),
     path("activate/<str:uidb64>/<str:token>/", views.activate, name="activate"),
     
+    path("subscribe/", views.subscribe, name="subscribe"),
     
     path("login/", views.loginPage, name="login"),
     path("logout/", views.logoutUser , name = "logout"),

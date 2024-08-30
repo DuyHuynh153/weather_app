@@ -104,9 +104,31 @@
             </div>
           {% endif %}
           {% if weather_data %}
-            <div>
-              {% include "weather_app/city_weather.html" with weather_data=weather_data messages=messages %}
-            </div>
+              <div>
+                  {% include "weather_app/city_weather.html" with weather_data=weather_data messages=messages %}
+                  <div>
+                      <form id="save-weather-form" method="post" action="{% url 'save_weather' %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="city" value="{{ weather_data.city }}">
+                          <input type="hidden" name="country" value="{{ weather_data.country }}">
+                          <input type="hidden" name="icon" value="{{ weather_data.icon }}">
+                          <input type="hidden" name="temperature" value="{{ weather_data.temperature }}">
+                          <input type="hidden" name="condition" value="{{ weather_data.condition }}">
+                          <input type="hidden" name="wind_kph" value="{{ weather_data.wind_kph }}">
+                          <input type="hidden" name="humidity" value="{{ weather_data.humidity }}">
+                          <input type="hidden" name="weather_time" value="{{ weather_data.Date }}">
+                          {% if request.user.is_authenticated %}
+                              <button type="submit" class="save-weather">Save Weather</button>
+                          {% endif %}
+                      </form>
+                  </div>
+              </div>
+          {% elif weather_data_list %}
+              <div>
+                  {% for weather_data in weather_data_list %}
+                      {% include "weather_app/city_weather.html" with weather_data=weather_data messages=messages %}
+                  {% endfor %}
+              </div>
           {% endif %}
           
           {% if error %}

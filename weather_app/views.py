@@ -100,21 +100,21 @@ def home(request):
          # Fetch the latest saved weather data for the user if the request method is GET and the query parameter is present
         elif request.method == "GET":
             if request.user.is_authenticated and request.GET.get('latest_weather') == 'true':
-                saved_weather_data = WeatherHistory.objects.filter(user=request.user).order_by('-weather_time').first()
-                if saved_weather_data:
-                    context["weather_data"] = {
-                        "city": saved_weather_data.city,
-                        "country": saved_weather_data.country,
-                        "temperature": saved_weather_data.temperature,
-                        "wind_kph": saved_weather_data.wind_speed,
-                        "humidity": saved_weather_data.humidity,
-                        "Date": saved_weather_data.weather_time,
-                        "icon": saved_weather_data.icon,  # Add appropriate icon if available
-                        "condition": saved_weather_data.condition  # Add appropriate condition if available
-                    }
-                    # Assuming you have a way to fetch forecast data based on the saved weather data
-                    # For simplicity, let's assume you have a function to fetch forecast data
-                    context["daily_forecast"] = []  # Add forecast data if available
+                saved_weather_data_list = WeatherHistory.objects.filter(user=request.user).order_by('-weather_time')
+                if saved_weather_data_list.exists():
+                    context["weather_data_list"] = [
+                        {
+                            "city": weather_data.city,
+                            "country": weather_data.country,
+                            "temperature": weather_data.temperature,
+                            "wind_kph": weather_data.wind_speed,
+                            "humidity": weather_data.humidity,
+                            "Date": weather_data.weather_time,
+                            "icon": weather_data.icon,  # Add appropriate icon if available
+                            "condition": weather_data.condition  # Add appropriate condition if available
+                        }
+                        for weather_data in saved_weather_data_list
+                    ]
             elif request.GET.get('city'):
                 city = request.GET.get('city')
                 weather_data, daily_forecast = fetch_weather_and_forecast_data(city, API_KEY, current_weather_url, forecast_url)
